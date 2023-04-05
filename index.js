@@ -34,7 +34,7 @@ const main = async () => {
     core.setOutput('body', responseBody);
 
     if (failOnError && response.message.statusCode >= 400) {
-      core.setFailed(`Request failed with status code ${response.status}`);
+      core.setFailed(`Request failed with status code ${response.message.statusCode}`);
     }
   } catch (error) {
     core.setFailed(error);
