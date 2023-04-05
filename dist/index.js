@@ -2841,7 +2841,7 @@ const main = async () => {
     const method = core.getInput('method');
     const headers = core.getMultilineInput('headers');
     const body = core.getInput('body');
-    const failOnError = core.getBooleanInput('failOnError');
+    const failOnError = core.getBooleanInput('fail-on-error');
 
     core.info(`url=${url}`);
     core.info(`method=${method}`);
