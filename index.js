@@ -1,4 +1,5 @@
 const core = require('@actions/core');
+const HttpClient = require('@actions/http-client').HttpClient;
 
 const main = async () => {
   try {
@@ -20,19 +21,16 @@ const main = async () => {
 
     core.info(`headersInit=${JSON.stringify(headersInit)}`);
 
-    const response = await fetch(url, {
-      method,
-      headers: headersInit,
-      body
-    });
+    const http = new HttpClient();
+    const response = await http.request(method, url, body, headersInit);
 
-    core.info(`response=${JSON.stringify(response)}`);
+    core.info(`response=${JSON.stringify(response.message)}`);
 
-    core.setOutput('status', response.status);
-    core.setOutput('headers', JSON.stringify(response.headers));
-    core.setOutput('body', await response.text());
+    core.setOutput('status', response.message.statusCode);
+    core.setOutput('headers', JSON.stringify(response.message.headers));
+    core.setOutput('body', await response.readBody());
 
-    if (!response.ok && failOnError) {
+    if (failOnError && response.message.statusCode >= 400) {
       core.setFailed(`Request failed with status code ${response.status}`);
     }
   } catch (error) {
