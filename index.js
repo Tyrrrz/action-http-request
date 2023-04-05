@@ -23,12 +23,15 @@ const main = async () => {
 
     const http = new HttpClient();
     const response = await http.request(method, url, body, headersInit);
+    const responseBody = await response.readBody();
 
-    core.info(`response=${JSON.stringify(response.message)}`);
+    core.info(`responseStatus=${response.message.statusCode}`);
+    core.info(`responseHeaders=${JSON.stringify(response.message.headers)}`);
+    core.info(`responseBody=${responseBody}`);
 
     core.setOutput('status', response.message.statusCode);
     core.setOutput('headers', JSON.stringify(response.message.headers));
-    core.setOutput('body', await response.readBody());
+    core.setOutput('body', responseBody);
 
     if (failOnError && response.message.statusCode >= 400) {
       core.setFailed(`Request failed with status code ${response.status}`);
