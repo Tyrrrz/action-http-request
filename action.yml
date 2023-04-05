@@ -25,5 +25,5 @@ outputs:
   body:
     description: Response body
 runs:
-  using: node18
+  using: node16
   main: index.js
