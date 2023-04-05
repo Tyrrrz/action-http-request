@@ -1,0 +1,29 @@
+name: HTTP request
+description: Make an HTTP request to a URL
+branding:
+  icon: cloud
+  color: blue
+inputs:
+  url:
+    description: Request URL
+    required: true
+  method:
+    description: Request method
+    default: GET
+  headers:
+    description: Request headers
+  body:
+    description: Request body
+  fail-on-error:
+    description: Fail if the response status code is not 2xx
+    default: true
+outputs:
+  status:
+    description: Response status code
+  headers:
+    description: Response headers
+  body:
+    description: Response body
+runs:
+  using: node18
+  main: index.js
