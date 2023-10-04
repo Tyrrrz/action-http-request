@@ -32,18 +32,33 @@ const main = async () => {
     const responseBody = await response.readBody();
     core.info(`Response body: ${responseBody}`);
 
-    // Check for errors and retry if necessary
-    if (inputs.failOnError && response.message.statusCode && response.message.statusCode >= 400) {
+    // Check for errors
+    if (response.message.statusCode && response.message.statusCode >= 400) {
+      // Retry if we have retries remaining
       if (remainingRetryCount > 0) {
-        core.warning(`Request failed with status code ${response.message.statusCode}. Retrying...`);
-        core.info(`Retries remaining: ${remainingRetryCount}`);
+        core.warning(
+          `Request failed with status code ${response.message.statusCode}. Retries remaining: ${remainingRetryCount}.`
+        );
 
-        await delay(inputs.retryDelay);
+        if (inputs.retryDelay > 0) {
+          core.info(`Delaying for ${inputs.retryDelay}ms...`);
+          await delay(inputs.retryDelay);
+        }
 
         remainingRetryCount--;
         continue;
-      } else {
-        core.setFailed(`Request failed with status code ${response.message.statusCode}`);
+      }
+      // Otherwise, fail or warn about the error
+      else {
+        if (inputs.failOnError) {
+          core.setFailed(
+            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
+          );
+        } else {
+          core.warning(
+            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
+          );
+        }
       }
     }
 

@@ -58,9 +58,9 @@ jobs:
 - `method`: HTTP method to use. Defaults to `GET`.
 - `headers`: Headers to send with the request. Each header should be on a separate line in the format of `Name: Value`. Defaults to empty.
 - `body`: Body to send with the request. Defaults to empty.
-- `fail-on-error`: Whether to fail the step if the request returns an unsuccessful status code. Defaults to `true`.
 - `retry-count`: Number of times to retry the request if it fails. Defaults to `0`.
 - `retry-delay`: Delay in milliseconds between retries. Defaults to `1000`.
+- `fail-on-error`: Whether to fail the step if the request returns an unsuccessful status code. Defaults to `true`.
 
 ### Outputs
 

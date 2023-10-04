@@ -16,15 +16,15 @@ inputs:
     description: Request headers
   body:
     description: Request body
-  fail-on-error:
-    description: Fail if the response status code is not 2xx
-    default: true
   retry-count:
-    description: Number of times to retry on failure
+    description: Number of times to retry if the response is not successful
     default: 0
   retry-delay:
     description: Delay between retries in milliseconds
     default: 1000
+  fail-on-error:
+    description: Fail the step if the response is not successful
+    default: true
 
 outputs:
   status:
