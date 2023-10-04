@@ -15,9 +15,9 @@ const main = async () => {
       core.getMultilineInput('headers').map((header) => header.split(':', 2).map((s) => s.trim()))
     ),
     body: core.getInput('body'),
-    failOnError: core.getBooleanInput('fail-on-error'),
     retryCount: Number(core.getInput('retry-count')),
-    retryDelay: Number(core.getInput('retry-delay'))
+    retryDelay: Number(core.getInput('retry-delay')),
+    failOnError: core.getBooleanInput('fail-on-error')
   };
 
   core.info(`Options: ${JSON.stringify(inputs, null, 2)}`);
