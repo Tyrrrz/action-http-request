@@ -1,6 +1,6 @@
 // @ts-check
 const core = require('@actions/core');
-const HttpClient = require('@actions/http-client').HttpClient;
+const { HttpClient } = require('@actions/http-client');
 const { delay } = require('./utils/promise');
 
 const main = async () => {
