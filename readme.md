@@ -48,6 +48,7 @@ jobs:
       - name: Print outputs
         run: |
           echo "Status: ${{ steps.request.outputs.status }}"
+          echo "Success: ${{ steps.request.outputs.success }}"
           echo "Headers: ${{ steps.request.outputs.headers }}"
           echo "Body: ${{ steps.request.outputs.body }}"
 ```
@@ -56,14 +57,15 @@ jobs:
 
 - `url`: URL to send the request to.
 - `method`: HTTP method to use. Defaults to `GET`.
-- `headers`: Headers to send with the request. Each header should be on a separate line in the format of `Name: Value`. Defaults to empty.
+- `headers`: Headers to send with the request (one per line). Defaults to empty.
 - `body`: Body to send with the request. Defaults to empty.
-- `retry-count`: Number of times to retry the request if it fails. Defaults to `0`.
-- `retry-delay`: Delay in milliseconds between retries. Defaults to `1000`.
-- `fail-on-error`: Whether to fail the step if the request returns an unsuccessful status code. Defaults to `true`.
+- `retry-count`: Number of times to retry on unsuccessful requests. Defaults to `0`.
+- `retry-delay`: Delay between retries in milliseconds. Defaults to `1000`.
+- `fail-on-error`: Whether to fail the step if the request was unsuccessful. Defaults to `true`.
 
 ### Outputs
 
 - `status`: Status code of the response.
-- `headers`: Headers returned by the response, formatted as a JSON object.
+- `success`: Whether the response status code indicates success.
+- `headers`: Headers returned by the response (formatted as a JSON object).
 - `body`: Body of the response.

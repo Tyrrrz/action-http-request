@@ -7,32 +7,34 @@ branding:
 
 inputs:
   url:
-    description: Request URL
+    description: URL to send the request to
     required: true
   method:
-    description: Request method
+    description: HTTP method to use
     default: GET
   headers:
-    description: Request headers
+    description: Headers to send with the request (one per line)
   body:
-    description: Request body
+    description: Body to send with the request
   retry-count:
-    description: Number of times to retry if the response is not successful
+    description: Number of times to retry on unsuccessful requests
     default: 0
   retry-delay:
     description: Delay between retries in milliseconds
     default: 1000
   fail-on-error:
-    description: Fail the step if the response is not successful
+    description: Whether to fail the step if the request was unsuccessful
     default: true
 
 outputs:
   status:
-    description: Response status code
+    description: Status code of the response
+  success:
+    description: Whether the response status code indicates success
   headers:
-    description: Response headers
+    description: Headers returned by the response (formatted as a JSON object)
   body:
-    description: Response body
+    description: Body of the response
 
 runs:
   using: node16

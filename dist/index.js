@@ -2703,6 +2703,20 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 110:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "toJson": () => (/* binding */ toJson)
+/* harmony export */ });
+// @ts-check
+const toJson = (value) => JSON.stringify(value, null, 2);
+
+
+/***/ }),
+
 /***/ 112:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
@@ -2876,8 +2890,9 @@ var __webpack_exports__ = {};
 (() => {
 // @ts-check
 const core = __nccwpck_require__(186);
-const HttpClient = (__nccwpck_require__(255).HttpClient);
+const { HttpClient } = __nccwpck_require__(255);
 const { delay } = __nccwpck_require__(112);
+const { toJson } = __nccwpck_require__(110);
 
 const main = async () => {
   const http = new HttpClient();
@@ -2891,26 +2906,22 @@ const main = async () => {
       core.getMultilineInput('headers').map((header) => header.split(':', 2).map((s) => s.trim()))
     ),
     body: core.getInput('body'),
-    failOnError: core.getBooleanInput('fail-on-error'),
     retryCount: Number(core.getInput('retry-count')),
-    retryDelay: Number(core.getInput('retry-delay'))
+    retryDelay: Number(core.getInput('retry-delay')),
+    failOnError: core.getBooleanInput('fail-on-error')
   };
 
-  core.info(`Options: ${JSON.stringify(inputs, null, 2)}`);
+  core.info(`Inputs: ${toJson(inputs)}`);
 
   let remainingRetryCount = inputs.retryCount;
   while (true) {
     // Make the request
     const response = await http.request(inputs.method, inputs.url, inputs.body, inputs.headers);
-    core.info(`Response: ${JSON.stringify(response, null, 2)}`);
-
-    // Read the response body
-    const responseBody = await response.readBody();
-    core.info(`Response body: ${responseBody}`);
+    const responseSuccess = response.message.statusCode && response.message.statusCode < 400;
 
     // Check for errors
-    if (response.message.statusCode && response.message.statusCode >= 400) {
-      // Retry if we have retries remaining
+    if (!responseSuccess) {
+      // Retry if possible
       if (remainingRetryCount > 0) {
         core.warning(
           `Request failed with status code ${response.message.statusCode}. Retries remaining: ${remainingRetryCount}.`
@@ -2938,10 +2949,23 @@ const main = async () => {
       }
     }
 
+    // Read the body
+    const responseBody = await response.readBody();
+
     // Set the outputs
-    core.setOutput('status', response.message.statusCode);
-    core.setOutput('headers', JSON.stringify(response.message.headers));
-    core.setOutput('body', responseBody);
+    const outputs = {
+      status: response.message.statusCode,
+      success: responseSuccess,
+      headers: response.message.headers,
+      body: responseBody
+    };
+
+    core.info(`Outputs: ${toJson(outputs)}`);
+
+    core.setOutput('status', outputs.status);
+    core.setOutput('success', outputs.success);
+    core.setOutput('headers', toJson(outputs.headers));
+    core.setOutput('body', outputs.body);
 
     // Break out of the retry loop
     break;

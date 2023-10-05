@@ -27,20 +27,10 @@ const main = async () => {
   while (true) {
     // Make the request
     const response = await http.request(inputs.method, inputs.url, inputs.body, inputs.headers);
-
-    core.info(
-      `Response: ${toJson({
-        status: response.message.statusCode,
-        headers: response.message.headers
-      })}`
-    );
-
-    // Read the response body
-    const responseBody = await response.readBody();
-    core.info(`Response body: ${responseBody}`);
+    const responseSuccess = response.message.statusCode && response.message.statusCode < 400;
 
     // Check for errors
-    if (response.message.statusCode && response.message.statusCode >= 400) {
+    if (!responseSuccess) {
       // Retry if possible
       if (remainingRetryCount > 0) {
         core.warning(
@@ -69,10 +59,23 @@ const main = async () => {
       }
     }
 
+    // Read the body
+    const responseBody = await response.readBody();
+
     // Set the outputs
-    core.setOutput('status', response.message.statusCode);
-    core.setOutput('headers', toJson(response.message.headers));
-    core.setOutput('body', responseBody);
+    const outputs = {
+      status: response.message.statusCode,
+      success: responseSuccess,
+      headers: response.message.headers,
+      body: responseBody
+    };
+
+    core.info(`Outputs: ${toJson(outputs)}`);
+
+    core.setOutput('status', outputs.status);
+    core.setOutput('success', outputs.success);
+    core.setOutput('headers', toJson(outputs.headers));
+    core.setOutput('body', outputs.body);
 
     // Break out of the retry loop
     break;
