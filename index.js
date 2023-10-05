@@ -2,6 +2,7 @@
 const core = require('@actions/core');
 const { HttpClient } = require('@actions/http-client');
 const { delay } = require('./utils/promise');
+const { toJson } = require('./utils/json');
 
 const main = async () => {
   const http = new HttpClient();
@@ -20,13 +21,19 @@ const main = async () => {
     failOnError: core.getBooleanInput('fail-on-error')
   };
 
-  core.info(`Options: ${JSON.stringify(inputs, null, 2)}`);
+  core.info(`Inputs: ${toJson(inputs)}`);
 
   let remainingRetryCount = inputs.retryCount;
   while (true) {
     // Make the request
     const response = await http.request(inputs.method, inputs.url, inputs.body, inputs.headers);
-    core.info(`Response: ${JSON.stringify(response, null, 2)}`);
+
+    core.info(
+      `Response: ${toJson({
+        status: response.message.statusCode,
+        headers: response.message.headers
+      })}`
+    );
 
     // Read the response body
     const responseBody = await response.readBody();
@@ -34,7 +41,7 @@ const main = async () => {
 
     // Check for errors
     if (response.message.statusCode && response.message.statusCode >= 400) {
-      // Retry if we have retries remaining
+      // Retry if possible
       if (remainingRetryCount > 0) {
         core.warning(
           `Request failed with status code ${response.message.statusCode}. Retries remaining: ${remainingRetryCount}.`
@@ -64,7 +71,7 @@ const main = async () => {
 
     // Set the outputs
     core.setOutput('status', response.message.statusCode);
-    core.setOutput('headers', JSON.stringify(response.message.headers));
+    core.setOutput('headers', toJson(response.message.headers));
     core.setOutput('body', responseBody);
 
     // Break out of the retry loop
