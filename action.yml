@@ -1,4 +1,4 @@
-name: HTTP request
+name: Send HTTP Request
 description: Make an HTTP request to a URL
 
 branding:
