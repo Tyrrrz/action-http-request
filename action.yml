@@ -37,5 +37,5 @@ outputs:
     description: Body of the response
 
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
