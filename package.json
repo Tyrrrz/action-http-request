@@ -5,11 +5,11 @@
     "build": "ncc build index.js -o dist"
   },
   "dependencies": {
-    "@actions/core": "^3.0.0",
-    "@actions/http-client": "^4.0.0"
+    "@actions/core": "^3.0.1",
+    "@actions/http-client": "^4.0.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.3"
   }
 }
