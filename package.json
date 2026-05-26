@@ -3,7 +3,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js -o dist --minify && rm -f dist/package.json"
+    "build": "ncc build index.js -o dist --minify"
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
