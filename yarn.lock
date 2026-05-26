@@ -17,7 +17,7 @@
   dependencies:
     "@actions/io" "^3.0.2"
 
-"@actions/http-client@^4.0.0", "@actions/http-client@^4.0.1":
+"@actions/http-client@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-4.0.1.tgz#22a23a7625ba1326d9ba154012ca8301a27f88a3"
   integrity sha512-+Nvd1ImaOZBSoPbsUtEhv+1z99H12xzncCkz0a3RuehINE81FZSe2QTj3uvAPTcJX/SCzUQHQ0D1GrPMbrPitg==

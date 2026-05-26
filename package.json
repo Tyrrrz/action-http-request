@@ -3,11 +3,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js -o dist"
+    "build": "ncc build index.js -o dist --minify"
   },
   "dependencies": {
-    "@actions/core": "^3.0.1",
-    "@actions/http-client": "^4.0.1"
+    "@actions/core": "^3.0.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4",

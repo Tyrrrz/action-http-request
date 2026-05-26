@@ -1,12 +1,9 @@
 // @ts-check
 import * as core from '@actions/core';
-import { HttpClient } from '@actions/http-client';
 import { delay } from './utils/promise.js';
 import { toJson } from './utils/json.js';
 
 const main = async () => {
-  const http = new HttpClient();
-
   // Get the inputs
   const inputs = {
     url: core.getInput('url'),
@@ -26,15 +23,19 @@ const main = async () => {
   let remainingRetryCount = inputs.retryCount;
   while (true) {
     // Make the request
-    const response = await http.request(inputs.method, inputs.url, inputs.body, inputs.headers);
-    const responseSuccess = response.message.statusCode && response.message.statusCode < 400;
+    const response = await fetch(inputs.url, {
+      method: inputs.method,
+      headers: inputs.headers,
+      body: inputs.body || null
+    });
+    const responseSuccess = response.status < 400;
 
     // Check for errors
     if (!responseSuccess) {
       // Retry if possible
       if (remainingRetryCount > 0) {
         core.warning(
-          `Request failed with status code ${response.message.statusCode}. Retries remaining: ${remainingRetryCount}.`
+          `Request failed with status code ${response.status}. Retries remaining: ${remainingRetryCount}.`
         );
 
         if (inputs.retryDelay > 0) {
@@ -49,24 +50,24 @@ const main = async () => {
       else {
         if (inputs.failOnError) {
           core.setFailed(
-            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
+            `Request failed with status code ${response.status}. No retries remaining.`
           );
         } else {
           core.warning(
-            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
+            `Request failed with status code ${response.status}. No retries remaining.`
           );
         }
       }
     }
 
     // Read the body
-    const responseBody = await response.readBody();
+    const responseBody = await response.text();
 
     // Set the outputs
     const outputs = {
-      status: response.message.statusCode,
+      status: response.status,
       success: responseSuccess,
-      headers: response.message.headers,
+      headers: Object.fromEntries(response.headers.entries()),
       body: responseBody
     };
 
