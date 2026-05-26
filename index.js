@@ -26,7 +26,7 @@ const main = async () => {
     const response = await fetch(inputs.url, {
       method: inputs.method,
       headers: inputs.headers,
-      body: inputs.body || null
+      body: ['GET', 'HEAD'].includes(inputs.method.toUpperCase()) ? null : (inputs.body || null)
     });
 
     const responseSuccess = response.status < 400;
