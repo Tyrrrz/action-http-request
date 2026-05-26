@@ -17,7 +17,7 @@
   dependencies:
     "@actions/io" "^1.0.1"
 
-"@actions/http-client@2.1.1":
+"@actions/http-client@^2.0.1":
   version "2.1.1"
   resolved "https://registry.npmjs.org/@actions/http-client/-/http-client-2.1.1.tgz"
   integrity sha512-qhrkRMB40bbbLo7gF+0vu+X+UawOvQQqNAA/5Unx774RS8poaOhThDOG6BGmxvAnxhQnDp2BG/ZUm65xZILTpw==
