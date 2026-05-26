@@ -6,7 +6,7 @@ import { toJson } from './utils/json.js';
 
 const main = async () => {
   const http = new HttpClient();
-  
+
   // Get the inputs
   const inputs = {
     url: core.getInput('url'),
