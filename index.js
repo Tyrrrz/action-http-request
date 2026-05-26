@@ -29,7 +29,7 @@ const main = async () => {
     const response = await http.request(
       inputs.method,
       inputs.url,
-      ['GET', 'HEAD'].includes(inputs.method.toUpperCase()) ? null : inputs.body || null,
+      inputs.body || null,
       inputs.headers
     );
 
