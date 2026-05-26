@@ -69,17 +69,14 @@ const main = async () => {
     const responseBody = await response.readBody();
 
     // Set the outputs
-    const responseHeaders = {};
-    for (const [key, value] of Object.entries(response.message.headers)) {
-      if (value !== undefined) {
-        responseHeaders[key] = Array.isArray(value) ? value.join(', ') : value;
-      }
-    }
-
     const outputs = {
       status: response.message.statusCode,
       success: responseSuccess,
-      headers: responseHeaders,
+      headers: Object.fromEntries(
+        Object.entries(response.message.headers)
+          .filter(([, value]) => value !== undefined)
+          .map(([key, value]) => [key, Array.isArray(value) ? value.join(', ') : value])
+      ),
       body: responseBody
     };
 
