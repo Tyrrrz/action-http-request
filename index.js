@@ -65,10 +65,16 @@ const main = async () => {
     const responseBody = await response.text();
 
     // Set the outputs
+    const responseHeaders = Object.fromEntries(response.headers.entries());
+    const setCookies = response.headers.getSetCookie();
+    if (setCookies.length > 0) {
+      responseHeaders['set-cookie'] = setCookies;
+    }
+
     const outputs = {
       status: response.status,
       success: responseSuccess,
-      headers: Object.fromEntries(response.headers.entries()),
+      headers: responseHeaders,
       body: responseBody
     };
 
