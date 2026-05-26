@@ -29,7 +29,7 @@ const main = async () => {
     const response = await http.request(
       inputs.method,
       inputs.url,
-      inputs.body || null,
+      inputs.body,
       inputs.headers
     );
 
