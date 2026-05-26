@@ -6,7 +6,8 @@
     "build": "ncc build index.js -o dist --minify && rm -f dist/package.json"
   },
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "@actions/http-client": "^2.2.3"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4",

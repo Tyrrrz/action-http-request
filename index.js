@@ -1,5 +1,6 @@
 // @ts-check
 import * as core from '@actions/core';
+import { HttpClient } from '@actions/http-client';
 import { delay } from './utils/promise.js';
 import { toJson } from './utils/json.js';
 
@@ -20,23 +21,26 @@ const main = async () => {
 
   core.info(`Inputs: ${toJson(inputs)}`);
 
+  const http = new HttpClient();
+
   let remainingRetryCount = inputs.retryCount;
   while (true) {
     // Make the request
-    const response = await fetch(inputs.url, {
-      method: inputs.method,
-      headers: inputs.headers,
-      body: ['GET', 'HEAD'].includes(inputs.method.toUpperCase()) ? null : (inputs.body || null)
-    });
+    const response = await http.request(
+      inputs.method,
+      inputs.url,
+      ['GET', 'HEAD'].includes(inputs.method.toUpperCase()) ? null : inputs.body || null,
+      inputs.headers
+    );
 
-    const responseSuccess = response.status < 400;
+    const responseSuccess = (response.message.statusCode ?? 0) < 400;
 
     // Check for errors
     if (!responseSuccess) {
       // Retry if possible
       if (remainingRetryCount > 0) {
         core.warning(
-          `Request failed with status code ${response.status}. Retries remaining: ${remainingRetryCount}.`
+          `Request failed with status code ${response.message.statusCode}. Retries remaining: ${remainingRetryCount}.`
         );
 
         if (inputs.retryDelay > 0) {
@@ -51,28 +55,29 @@ const main = async () => {
       else {
         if (inputs.failOnError) {
           core.setFailed(
-            `Request failed with status code ${response.status}. No retries remaining.`
+            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
           );
         } else {
           core.warning(
-            `Request failed with status code ${response.status}. No retries remaining.`
+            `Request failed with status code ${response.message.statusCode}. No retries remaining.`
           );
         }
       }
     }
 
     // Read the body
-    const responseBody = await response.text();
+    const responseBody = await response.readBody();
 
     // Set the outputs
-    const responseHeaders = Object.fromEntries(response.headers.entries());
-    const setCookies = response.headers.getSetCookie();
-    if (setCookies.length > 0) {
-      responseHeaders['set-cookie'] = setCookies;
+    const responseHeaders = {};
+    for (const [key, value] of Object.entries(response.message.headers)) {
+      if (value !== undefined) {
+        responseHeaders[key] = Array.isArray(value) ? value.join(', ') : value;
+      }
     }
 
     const outputs = {
-      status: response.status,
+      status: response.message.statusCode,
       success: responseSuccess,
       headers: responseHeaders,
       body: responseBody
