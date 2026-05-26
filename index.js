@@ -28,6 +28,7 @@ const main = async () => {
       headers: inputs.headers,
       body: inputs.body || null
     });
+
     const responseSuccess = response.status < 400;
 
     // Check for errors
