@@ -5,6 +5,8 @@ import { delay } from './utils/promise.js';
 import { toJson } from './utils/json.js';
 
 const main = async () => {
+  const http = new HttpClient();
+  
   // Get the inputs
   const inputs = {
     url: core.getInput('url'),
@@ -21,8 +23,6 @@ const main = async () => {
 
   core.info(`Inputs: ${toJson(inputs)}`);
 
-  const http = new HttpClient();
-
   let remainingRetryCount = inputs.retryCount;
   while (true) {
     // Make the request
@@ -33,7 +33,7 @@ const main = async () => {
       inputs.headers
     );
 
-    const responseSuccess = (response.message.statusCode ?? 0) < 400;
+    const responseSuccess = response.message.statusCode && response.message.statusCode < 400;
 
     // Check for errors
     if (!responseSuccess) {
