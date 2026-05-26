@@ -1,5 +1,6 @@
 {
   "name": "action-get-tag",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "ncc build index.js -o dist"

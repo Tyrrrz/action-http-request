@@ -1,8 +1,8 @@
 // @ts-check
-const core = require('@actions/core');
-const { HttpClient } = require('@actions/http-client');
-const { delay } = require('./utils/promise');
-const { toJson } = require('./utils/json');
+import * as core from '@actions/core';
+import { HttpClient } from '@actions/http-client';
+import { delay } from './utils/promise.js';
+import { toJson } from './utils/json.js';
 
 const main = async () => {
   const http = new HttpClient();
