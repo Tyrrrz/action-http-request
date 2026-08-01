@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.44.1",
-    "prettier": "^3.9.4"
+    "prettier": "^3.9.6"
   },
   "resolutions": {
     "@actions/http-client": "4.0.1"
