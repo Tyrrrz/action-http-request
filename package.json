@@ -13,7 +13,7 @@
     "@actions/http-client": "4.0.1"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.44.1",
+    "@vercel/ncc": "^0.45.0",
     "prettier": "^3.9.6"
   },
   "resolutions": {
