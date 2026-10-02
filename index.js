@@ -1,8 +1,29 @@
 // @ts-check
+import net from "node:net";
 import * as core from "@actions/core";
 import { HttpClient } from "@actions/http-client";
 import { delay } from "./utils/promise.js";
 import { toJson } from "./utils/json.js";
+
+// Reject requests aimed at loopback/private/link-local addresses (e.g. cloud metadata
+// endpoints such as 169.254.169.254) to mitigate server-side request forgery.
+const isDisallowedHost = (hostname) => {
+  const host = hostname.toLowerCase();
+  if (host === "localhost" || host === "metadata.google.internal") return true;
+
+  if (net.isIP(host) === 4) {
+    const [a, b] = host.split(".").map(Number);
+    return (
+      a === 127 || a === 10 || a === 0 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 169 && b === 254)
+    );
+  }
+
+  if (net.isIP(host) === 6) {
+    return host === "::1" || host.startsWith("fc") || host.startsWith("fd") || host.startsWith("fe80");
+  }
+
+  return false;
+};
 
 const main = async () => {
   const http = new HttpClient();
@@ -22,6 +43,11 @@ const main = async () => {
   };
 
   core.info(`Inputs: ${toJson(inputs)}`);
+
+  const parsedUrl = new URL(inputs.url);
+  if (!["http:", "https:"].includes(parsedUrl.protocol) || isDisallowedHost(parsedUrl.hostname)) {
+    throw new Error(`URL '${inputs.url}' is not allowed.`);
+  }
 
   let remainingRetryCount = inputs.retryCount;
   while (true) {
