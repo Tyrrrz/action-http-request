@@ -1,10 +1,11 @@
 {
-  "name": "action-get-tag",
+  "name": "action-http-request",
   "type": "module",
   "main": "index.js",
   "engines": {
     "node": ">=24"
   },
+  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "build": "ncc build index.js -o dist --minify"
   },
