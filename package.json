@@ -1,11 +1,8 @@
 {
   "name": "action-http-request",
+  "private": true,
   "type": "module",
   "main": "index.js",
-  "engines": {
-    "node": ">=24"
-  },
-  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "build": "ncc build index.js -o dist --minify"
   },
