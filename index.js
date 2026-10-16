@@ -18,6 +18,7 @@ for (const [address, prefix] of [
   ["192.168.0.0", 16],
   ["169.254.0.0", 16],
   ["0.0.0.0", 8],
+  ["100.64.0.0", 10],
 ]) {
   disallowedAddresses.addSubnet(address, prefix, "ipv4");
 }
